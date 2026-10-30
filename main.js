@@ -64,5 +64,37 @@ const randomRainbowCircles = (p, opts = {}) => {
 
 // useCanvas("rainbowcircles", rainbowCircles, {width: 25, distance: 90});
 
-useCanvas("1", randomRainbowCircles, {max: 500});
 
+const perlinField = (p, opts = {}) => {
+  const rows = opts.rows ?? 28;
+  const cols = opts.cols ?? 28;
+  const gw = opts.gridWidth ?? 1200;
+
+  const m = opts.margin ?? 10;
+  p.noiseSeed(opts.seed ?? 21)
+  const d = gw/rows;
+
+  const noiseScale = 0.03;
+  p.noStroke()
+  p.textAlign(p.CENTER, p.CENTER)
+
+  p.textSize(d*0.60);
+  p.textFont('courier new')
+  for(let x = 0; x < rows; x++){
+    for(let y = 0; y < cols; y++){
+      const value = p.noise(x * noiseScale,y * noiseScale);
+      const normalized = p.floor(p.map(value, 0, 1, 1, 255))
+
+      const spacingX = m + d * x;
+      const spacingY = m + d * y;
+      p.fill(normalized);
+      p.rect(spacingX, spacingY, d, d);
+      p.fill(255);
+      p.text(normalized, spacingX + d/2, spacingY + d/2);
+
+    }
+  }
+
+}
+
+useCanvas("1", perlinField, {rows: 100, cols: 100});
